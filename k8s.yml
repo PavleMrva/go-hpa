@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-hpa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-hpa
+  template:
+    metadata:
+      labels:
+        app: go-hpa
+    spec:
+      containers:
+      - image: pavle/go-hpa
+        name: go-hpa
+        imagePullPolicy: Never
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-hpa
+  labels:
+    run: go-hpa
+spec:
+  type: ClusterIP
+  ports:
+  - name: "go-hpa"
+    port: 8080
+  selector:
+    app: go-hpa
